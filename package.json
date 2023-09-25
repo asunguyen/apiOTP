@@ -1,0 +1,12 @@
+{
+  "name": "apiotp",
+  "version": "1.0.0",
+  "description": "đây là code api otp anh Kiên",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ktool.site",
+  "license": "ISC"
+}
