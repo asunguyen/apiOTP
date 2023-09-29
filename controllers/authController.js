@@ -30,12 +30,13 @@ const authController = {
                 res.json({code: 404, error: "Wrong password"});
             }
             if (user && validPass) {
-                jwt.sign({
+                const accessToken = jwt.sign({
                     id: user._id,
                     admin: user.isAdmin,
 
-                }, process.env.jwtKey);
-                res.json({code: 200, data: user});
+                }, process.env.jwtKey, {expiresIn: "365d"});
+                const {password, ...others} = user._doc;
+                res.json({code: 200, data: {...others}, token: accessToken});
             }
             
         } catch(err) {

@@ -5,6 +5,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
+const path = require('path');
+const clientRouter = require("./routers/client");
+const adminRouter = require("./routers/admin");
 const authRouter = require("./routers/auth");
 const userRouter = require("./routers/user");
 
@@ -16,13 +19,19 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(cookieParser());
 
+//file tĩnh
+app.use("/public", express.static(path.join(__dirname, "/public")));
 //router
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
-app.get("/", (req, res) => {
-    res.json("home");
-})
+app.use("/", clientRouter);
+app.use("/admin", adminRouter);
+app.set("view engine", "ejs");
+app.set("views", "./views");
+
+//
+
 
 
 

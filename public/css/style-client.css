@@ -1,0 +1,32 @@
+.container{
+    min-height: 500px;
+    height: 100%;
+}
+.form-login{
+    width: 350px;
+    height: 285px;
+    box-shadow: 0 0 2px #ccc;
+    margin: 90px auto;
+    box-sizing: border-box;
+    padding: 20px;
+}
+.form-login .row{
+    margin: 0;
+    box-sizing: border-box;
+}
+.form-login .row .form-group{
+    width: 100%;
+}
+.form-login label{
+    color: #fff;
+}
+.main-site{
+    height: calc(100vh - 60px);
+}
+body{
+    background-color: #13263c;
+    background-image: url("../asset/images/landing.svg");
+}
+.navbar.navbar-expand-lg{
+    padding: 10px 100px;
+}
