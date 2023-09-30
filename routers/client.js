@@ -6,6 +6,9 @@ router.get("/", (req, res) => {
 router.get("/login", (req, res) => {
     res.render("client/login");
 });
+router.get("/register", (req, res) => {
+    res.render("client/register");
+});
 router.get("/dash", (req, res) => {
     res.render("client/dash");
 })

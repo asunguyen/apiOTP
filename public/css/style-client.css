@@ -1,3 +1,12 @@
+.clear-pro{
+    background-color: transparent;
+    background-image: none;
+    margin: 0;
+    padding: 0;
+    float: left;
+    width: 100vw;
+    height: 100vh;
+}
 .container{
     min-height: 500px;
     height: 100%;
@@ -10,6 +19,9 @@
     box-sizing: border-box;
     padding: 20px;
 }
+.form-register{
+    height: 345px;
+}
 .form-login .row{
     margin: 0;
     box-sizing: border-box;
@@ -20,6 +32,30 @@
 .form-login label{
     color: #fff;
 }
+
+.form-register{
+    width: 350px;
+    height: 285px;
+    box-shadow: 0 0 2px #ccc;
+    margin: 90px auto;
+    box-sizing: border-box;
+    padding: 20px;
+}
+.form-register{
+    height: 345px;
+}
+.form-register .row{
+    margin: 0;
+    box-sizing: border-box;
+}
+.form-register .row .form-group{
+    width: 100%;
+}
+.form-register label{
+    color: #fff;
+}
+
+
 .main-site{
     height: calc(100vh - 60px);
 }
@@ -29,4 +65,47 @@ body{
 }
 .navbar.navbar-expand-lg{
     padding: 10px 100px;
+}
+.main-dash .leftbar{
+    width: 300px;
+    height: 100vh;
+    box-shadow: 0 0 2px #ccc;
+    background: #123;
+    color: #fff;
+    float: left;
+}
+.main-dash .leftbar .list-group {
+    border-radius: 0;
+}
+.main-dash .leftbar .list-group .list-group-item{
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    border-bottom: 1px solid #ccc;
+}
+.main-dash .leftbar .list-group .list-group-item.active {
+    background-color: #fff;
+    color: #495057;
+    border-color: #ccc;
+}
+.main-dash .leftbar .list-group .list-group-item:hover{
+    background-color: #fff;
+    color: #495057;
+    border-color: #ccc;
+}
+.main-dash .leftbar-header {
+    TEXT-ALIGN: CENTER;
+    HEIGHT: 100PX;
+    LINE-HEIGHT: 75PX;
+    FONT-SIZE: 32PX;
+    BACKGROUND: #00152a;
+}
+
+.main-dash .contentbar{
+    float: left;
+    width: calc(100% - 300px);
+    height: 100vh;
+}
+.navbar-toggler-icon{
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.5%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
