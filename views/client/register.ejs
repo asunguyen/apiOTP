@@ -68,7 +68,7 @@
                 <button type="button" id="login-btn" class="btn btn-primary">Login</button>
             </div>
         </div>
-        
+
     </div>
 
 
@@ -78,35 +78,36 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
         crossorigin="anonymous"></script>
+    <script src="../../public/js/resfull.js"></script>
+    <script src="../../public/dist/js/demo.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#login-btn').unbind("click").click(function(e) {
-                e.stopPropagation();
-                e.preventDefault();
+        $(document).ready(function () {
+            async function login() {
                 var username = $("#username").val();
                 var email = $('#exampleInputEmail1').val();
                 var pass = $("#exampleInputPassword1").val();
-                $.ajax({
-                    method: "POST",
-                    url:"/api/v1/auth/register",
-                    data: {
-                        email: email,
-                        username: username,
-                        password: pass
-                    }, 
-                    success: function(data) {
-                        if(data.code == 200) {
-                            localStorage.setItem("token", data.token);
-                            window.location.href = "/login"
-                        } else {
-                            alert(data.error);
-                        }
-                        console.log(data);
-                    }, 
-                    error: function(err) {
-                        console.log(err);
+                const data = {
+                    email: email,
+                    username: username,
+                    password: pass
+                };
+                if (pass.length >= 6) {
+                    let res = await api.post("auth/register", JSON.stringify(data));
+                    if (res && res.code == 200) {
+                        localStorage.setItem("token", "");
+                        window.location.href = "/login"
+                    } else {
+                        alert("Email hoặc Username đã tồn tại, vui lòng thử giá trị khác!");
                     }
-                })
+                } else {
+                    alert("Password phải có độ dài tối thiểu là 6 ký tự");
+                }
+
+            }
+            $('#login-btn').unbind("click").click(function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                login();
             })
         })
     </script>

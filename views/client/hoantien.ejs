@@ -1,0 +1,223 @@
+<!-- Navbar -->
+<%- include("../client/layout/layoutSidebar.ejs") %>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Hoàn tiền</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#" class="amount-account"></a></li>
+                            <li class="breadcrumb-item active" id="username-account"></li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+
+            <!-- Default box -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="input-group w-100">
+                        <input type="text" placeholder="Nhập username của tài khoản tra cứu" id="username" />
+                        <div class="input-group-prepend">
+                            <button type="button" class="amount-custom btn btn-outline-success" id="tracuu">Tra cứu
+                                thông tin</button>
+                                <button type="button" class="amount-custom btn btn-outline-info" id="hoantienuser">Hoàn
+                                    tiền</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <label class="w-100 pl-2 mt-3">Thông tin tài khoản <p class="userTracuu"></p></label>
+                <div class="col-lg-6 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3 id="total-pay"></h3>
+
+                            <p>Tổng tiền đã nạp</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-pie-graph"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3 class="amount-account-user"></h3>
+
+                            <p>Số dư</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-6 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3 id="total-request"></h3>
+
+                            <p>Tổng số Request</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-6 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3 id="total-otp"></h3>
+
+                            <p>Tổng số OTP</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-person-add"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3 id="total-otp-amount"></h3>
+
+                            <p>Tổng số OTP trả phí</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-person-add"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-6 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3 id="total-money-change"></h3>
+
+                            <p>Tổng số tiền chênh</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+            <div class="row">
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">STT</th>
+                            <th scope="col">Phone</th>
+                            <th scope="col">OTP</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Giá</th>
+                            <th scope="col">Ngày tạo</th>
+                            <th scope="col">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="list-pay">
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card -->
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+
+    <%- include("../client/layout/layoutFooter.ejs") %>
+
+        <script>
+            $(document).ready(function () {
+                let user = localStorage.getItem("user");
+                if (user && user.length > 0) {
+                    user = JSON.parse(user);
+                } else {
+                    window.location.href = "/login"
+                }
+                $("#token-user").text(user._id);
+            });
+            async function renderDetailOTP(data) {
+                var html = ``;
+                for (var i = 0; i < data.length; i++) {
+                    var stt = "";
+                    var datei = new Date(data[i].createdAt);
+                    var amount = data[i].amount || 0;
+                    switch (data[i].status) {
+                        case 0:
+                            stt = "pending"
+                            break;
+                        case 1:
+                            stt = "done"
+                            break;
+                        case 3:
+                            stt = "expired"
+                            break;
+                    }
+                    html += `<tr id="` + data[i]._id + `">
+                            <th scope="row">`+ (i + 1) + `</th>
+                            <td>`+ data[i].phoneNumber + `</td>
+                            <td class="otp">`;
+                    if (data[i].otp && data[i].otp.length > 0) {
+                        html += data[i].otp.match(/\d+/);
+                    }
+                    html += `</td>
+                            <td>`+ data[i].brand + `</td>
+                            <td>`+ amount + `</td>
+                            <td>`+ datei.getFullYear() + "-" + (datei.getMonth() + 1) + "-" + datei.getDate() + ":" + datei.getHours() + ":" + datei.getMinutes() + ":" + datei.getSeconds() + `</td>
+                            <td class="status">`+ stt + `</td>
+                        </tr>`;
+                }
+                $("#list-pay").html(html);
+            }
+            async function tracuuthongtin() {
+                let username = $("#username").val();
+                let res = await api.post("admin/manager/info-user", JSON.stringify({ username: username }));
+                if (res && res.code == 200) {
+                    $('.userTracuu').text(res.data.user.username);
+                    $('#total-pay').text(res.data.totalPay);
+                    $('.amount-account-user').text(res.data.amount);
+                    $('#total-request').text(res.data.totalRequest);
+                    $('#total-otp').text(res.data.totalOTP);
+                    $("#total-otp-amount").text(res.data.totalAmountOTP);
+                    $("#total-money-change").text(res.data.amountChange);
+                    renderDetailOTP(res.data.listOTP);
+                } else {
+                    alert(res.error);
+                }
+            }
+            async function hoanthien() {
+                let username = $("#username").val();
+                let res = await api.post("admin/manager/hoantien-user", JSON.stringify({ username: username }));
+            }
+
+            $("#tracuu").unbind("click").click(function () {
+                tracuuthongtin();
+            });
+            $("#hoantienuser").unbind("click").click(function () {
+                hoanthien();
+            });
+        </script>

@@ -10,7 +10,9 @@ const clientRouter = require("./routers/client");
 const adminRouter = require("./routers/admin");
 const authRouter = require("./routers/auth");
 const userRouter = require("./routers/user");
-
+const payRouter = require("./routers/payment");
+const thuesoRouter = require("./routers/thueso");
+const thongbaoRouter = require("./routers/thongbaoRouter");
 
 dotenv.config();
 var app = express();
@@ -21,10 +23,16 @@ app.use(cookieParser());
 
 //file tĩnh
 app.use("/public", express.static(path.join(__dirname, "/public")));
-//router
+//router api
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/payment", payRouter);
+app.use("/api/v1/thueso", thuesoRouter);
+app.use("/api/v1/notice/", thongbaoRouter);
+app.use("/api/v1/admin/", adminRouter);
+
+//router client
 app.use("/", clientRouter);
 app.use("/admin", adminRouter);
 app.set("view engine", "ejs");

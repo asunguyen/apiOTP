@@ -1,19 +1,33 @@
 const jwt = require("jsonwebtoken");
-
+const User = require("../models/user");
 const authMiddl = {
-    verifyToken: (req, res, next) => {
+    verifyToken: async(req, res, next) => {
         const token = req.headers.token;
         if (token) {
             const accessToken = token.split(" ")[1];
             jwt.verify(accessToken, process.env.jwtKey, (err, user) => {
                 if (err) {
                     res.json({code: 403, error: "Token is not valid"});
-                } 
-                req.user = user;
-                next();
+                } else {
+                    req.user = user;
+                    next();
+                }
+                
             })
         } else {
-            res.json({code: 401, error: "You're not authenticated"});
+            const tokenUser = req.headers.tokenId || req.headers.tokenid;
+            if(tokenUser) {
+                const user = await User.findById(tokenUser);
+                if (user && user._id) {
+                    req.user = user;
+                    req.user.id = user._id;
+                    next();
+                } else {
+                    res.json({code: 401, error: "You're not authenticated"});
+                }
+            } else {
+                res.json({code: 401, error: "You're not authenticated"});
+            }
         }
     },
     verifyTokenAdmin: (req, res, next) => {

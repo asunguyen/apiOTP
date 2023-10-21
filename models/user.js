@@ -1,3 +1,4 @@
+const { Double } = require('mongodb');
 const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
     username: {
@@ -21,6 +22,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    amount: {
+        type: Number,
+        default: 0
+    }
 
 }, {timestamps: true});
 

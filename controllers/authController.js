@@ -24,11 +24,13 @@ const authController = {
             const user = await User.findOne({username: req.body.username});
             if (!user) {
                 res.json({code: 404, error: "Wrong username"});
+                return;
             }
-            const validPass = bcrypt.compare(req.body.password, user.password);
+            const validPass = await bcrypt.compare(req.body.password, user.password);
             if (!validPass) {
                 res.json({code: 404, error: "Wrong password"});
-            }
+                return;
+            } 
             if (user && validPass) {
                 const accessToken = jwt.sign({
                     id: user._id,
@@ -42,6 +44,6 @@ const authController = {
         } catch(err) {
             res.json({code: 500, error: err});
         }
-    }
+    },
 };
 module.exports = authController;
