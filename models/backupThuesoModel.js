@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
-const thuesoSchema = new mongoose.Schema({
+const thuesoBackupSchema = new mongoose.Schema({
    userID: ObjectId,
    codeID: {
       unique: true,
@@ -34,5 +34,5 @@ const thuesoSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-module.exports = mongoose.model("thueso", thuesoSchema);
+module.exports = mongoose.model("thuesoBackup", thuesoBackupSchema);
 

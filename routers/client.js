@@ -34,5 +34,8 @@ router.get("/info-user", async(req, res)=> {
 router.get("/api", async(req, res)=> {
     res.render("client/apiclient");
 })
+router.get("/test-get-phone", async(req, res)=> {
+    res.render("client/getPhone");
+})
 
 module.exports = router;

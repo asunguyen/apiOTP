@@ -45,11 +45,13 @@
                             <label>Dịch vụ</label>
                             <div class="input-group">
                                 <select class="form-control" id="dichvu">
-                                    <option value="Google" selected>Google - 750đ</option>
+                                    <option value="Google" selected>Google - 850đ</option>
                                     <option value="Microsoft">Microsoft - 700đ</option>
                                     <option value="Discord">Discord - 1000đ</option>
                                     <option value="Telegram">Telegram - 4000đ</option>
-                                    <option value="Facebook">Facebook - 800đ</option>
+                                    <option value="Facebook">Facebook - 850đ</option>
+                                    <option value="Whatsapp">Whatsapp - 3500đ</option>
+                                    <option value="Cloudways">Cloudways - 700đ</option>
                                 </select>
                                 <div class="input-group-prepend">
                                     <button type="button" class="amount-custom btn btn-outline-success"
@@ -94,15 +96,15 @@
             //get list
             var arrSet = [];
             $(document).ready(function () {
-                async function getDetail(id) {
-                    let res = await api.post("thueso/detail", JSON.stringify({ code: id }));
+                async function getDetail(codeID) {
+                    let res = await api.post("thueso/detail", JSON.stringify({ code: codeID }));
                     if (res && res.code == 200) {
                         if (res.data.status == 0) {
-                            if (arrSet.findIndex(x => x === id) < 0) {
-                                arrSet.push(id);
+                            if (arrSet.findIndex(x => x === codeID) < 0) {
+                                arrSet.push(codeID);
                             }
                             setTimeout(function () {
-                                getDetail(id);
+                                getDetail(codeID);
                             }, 15000);
                         }
                         
@@ -118,14 +120,14 @@
                                 stt = "expired"
                                 break;
                         }
-                        $("#"+id+" .status").text(stt);
+                        $("#"+codeID+" .status").text(stt);
                         if (res.data.otp && res.data.otp.length > 0) {
-                            $("#"+id+" .otp").text(res.data.otp.match(/\d+/));
+                            $("#"+codeID+" .otp").text(res.data.otp.match(/\d+/));
                         }
                         
                         $(".amount-account").text(res.user.amount + " vnđ");
                     }else {
-                        $("#"+id+" .status").text("expired");
+                        $("#"+codeID+" .status").text("expired");
                     }
                 };
                 var user = localStorage.getItem("user");
@@ -150,7 +152,7 @@
                                 stt = "expired"
                                 break;
                         }
-                        html += `<tr id="` + data[i]._id + `">
+                        html += `<tr id="` + data[i].codeID + `">
                             <th scope="row">`+ (i + 1) + `</th>
                             <td>`+ data[i].phoneNumber + `</td>
                             <td class="otp">`;
@@ -163,8 +165,8 @@
                             <td>`+ datei.getFullYear() + "-" + (datei.getMonth() + 1) + "-" + datei.getDate() + ":" + datei.getHours() + ":" + datei.getMinutes() + ":" + datei.getSeconds() + `</td>
                             <td class="status">`+ stt + `</td>
                         </tr>`;
-                        if (data[i].status == 0 && arrSet.findIndex(x => x === data[i]._id) < 0) {
-                            await getDetail(data[i]._id);
+                        if (data[i].status == 0 && arrSet.findIndex(x => x === data[i].codeID) < 0) {
+                            await getDetail(data[i].codeID);
                         }
                     }
                     $("#list-pay").html(html);
@@ -213,8 +215,7 @@
                     }
                     let res = await api.post("thueso/create", JSON.stringify(data));
                     if (res && res.code == 200) {
-                        $(".amount-account").text(res.user.amount + " vnđ");
-                        await getDetail(res.data._id);
+                        await getDetail(res.data.codeID);
                         getListPay();
                     } else {
                         alert(res.error);

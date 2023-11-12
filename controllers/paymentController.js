@@ -52,7 +52,7 @@ const paymentCtrl = {
         }) 
         
     },
-    activeDeposit: async(req, res) => {
+    activeDeposit: async (req, res) => {
         authMiddl.verifyTokenAdmin(req, res, async () => {
             try {
                 let payInfo = await Payment.find({code: req.body.code});
@@ -60,8 +60,9 @@ const paymentCtrl = {
                     let user = await User.findById(payInfo[0].userID);
                     const cupon = req.body.cupon ? (payInfo[0].amount * req.body.cupon / 100) : 0;
                     console.log(cupon);
+                    const totalPay = (payInfo[0].amount + cupon) * 1000;
                     const amountNew = user.amount + (payInfo[0].amount + cupon) * 1000;
-                    const updatePay = await Payment.findOneAndUpdate({code: req.body.code}, {$set: {status: 1, cupon: cupon}});
+                    const updatePay = await Payment.findOneAndUpdate({code: req.body.code}, {$set: {status: 1, cupon: cupon, totalPay: totalPay}});
                     const updateUser = await User.findOneAndUpdate({_id: user._id}, {$set: {amount: amountNew}});
                     res.json({code: 200});
                 } else {
@@ -72,6 +73,16 @@ const paymentCtrl = {
                 res.json({code: 500, error: err});
             }
         })
+    },
+    deletePayment: async (req, res) => {
+        try{
+            authMiddl.verifyTokenAdmin(req, res, async() => {
+                const deletePay = await Payment.findByIdAndDelete(req.body.id);
+                res.json({code: 200});
+            });
+        } catch(err) {
+            res.json({code: 500, error: err});
+        }
     }
 }
 

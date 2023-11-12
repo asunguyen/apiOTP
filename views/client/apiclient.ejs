@@ -33,12 +33,11 @@
                         <h4>API lấy số điện thoại</h4>
                     </div>
                     <div class="row">
-                        <p>http://ktool.site/api/v1/thueso/create</p>
+                        <p>http://ktool.site/api/v1/thueso/create?tokenid={token của bạn}&quocgia={vn1 hoặc vn2 hoặc cam...}&dichvu={Google hoặc Discord hoặc Telegram....}</p>
                         
                     </div>
-                    <div class="row"><p>Method: POST</p></div>
-                    <div class="row"><p>headers: {tokenId: token}</p></div>
-                    <div class="row"><p>body: {quocgia: vn1, vn2..., dichvu: Google, Discord...}</p></div>
+                    <div class="row"><p>Ví dụ</p></div>
+                    <div class="row"><p>http://ktool.site/api/v1/thueso/create?tokenid=65170ce2bf4d11f4acfb99f45&quocgia=cam&dichvu=Google</p></div>
                     <div class="row"><p>response: {<br>
                         "code": 200,<br>
                         "data": {<br>
@@ -57,11 +56,10 @@
                         <h4>API lấy otp</h4>
                     </div>
                     <div class="row">
-                        <p>http://ktool.site/api/v1/thueso/detail</p>
+                        <p>http://ktool.site/api/v1/thueso/detail?tokenid={token của bạn}&code={codeID data trả về của lấy số điện thoại}</p>
                     </div>
-                    <div class="row"><p>Method: POST</p></div>
-                    <div class="row"><p>headers: {tokenId: token}</p></div>
-                    <div class="row"><p>body: {code: codeID}</p></div>
+                    <div class="row"><p>Ví dụ:</p></div>
+                    <div class="row"><p>http://ktool.site/api/v1/thueso/detail?tokenid=65170ce2bf4d11f4acfb99f45&code=65352e816d2de34c3fa5d2e32</p></div>
                     <div class="row"><p>response: {<br>
                         "code": 200,<br>
                         "data": {<br>

@@ -38,6 +38,7 @@ router.post("/manager/update-dichvu", adminController.updateDichVu);
 router.post("/manager/create-dichvu", adminController.createDichVu);
 router.post("/manager/info-user", adminController.userInfo);
 router.post("/manager/hoantien-user", adminController.hoantienUser);
-
+router.get("/list-pending", adminController.getListPayPending);
+router.get("/manager/history-dichvu", adminController.getHistoryDichVu);
 
 module.exports = router;

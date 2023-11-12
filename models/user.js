@@ -25,6 +25,22 @@ const userSchema = new mongoose.Schema({
     amount: {
         type: Number,
         default: 0
+    },
+    rqExp: {
+        type: Number,
+        default: 0
+    },
+    rqOk: {
+        type: Number,
+        default: 0
+    },
+    amountExp: {
+        type: Number,
+        default: 0
+    },
+    amountOk: {
+        type: Number,
+        default: 0
     }
 
 }, {timestamps: true});
