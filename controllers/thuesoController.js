@@ -193,6 +193,14 @@ const thusoController = {
           const user = await User.findById(req.user.id);
           let quocgia = req.body.quocgia || req.query.quocgia;
           let dichvu = req.body.dichvu || req.query.dichvu;
+          if (quocgia == "vnmb1") {
+            if (user && (user.username == "AnnieLS" || user.username == "nguyensu" || user.username == "luvzpast")) {
+
+            }else {
+              res.json({ code: 404, error: "dịch vụ tạm dừng vui lòng liên hệ admin" });
+                return;
+            }
+          } 
           if (dichvu == "Facebook") {
             if (user && (user.username == "Matkhau" || user.username == "Tungfb999" || user.username == "nguyensu" || user.username == "luvzpast")) {
   
@@ -229,7 +237,6 @@ const thusoController = {
             const url = `http://14.225.255.45:3010/phone/${quocgia}/${dichvu}?token=${process.env.tokenO}`;
             const response = await axios.get(url);
             if (response && response.data && response.data.phoneNumber) {
-  
               if (amount > 0) {
                 const dataRes = {
                   amount: amount,
@@ -274,6 +281,7 @@ const thusoController = {
       })
     } else {
       res.json({ code: 503, error: "pending" });
+      totalRQ++;
     }
     
   },
