@@ -255,6 +255,49 @@ const job = {
         }catch(err) {
             console.log("updateDB:: ", err);
         }
+    },
+    updateUserHistStatus: async(username, pagesize) => {
+        try {
+            let page = pagesize;
+            const user = await User.findOne({username: username});
+            console.log("user:: ", user);
+            if (user && user._id) {
+                const listPhone = await ThuesoBackup.find({userID: user._id, status: 3}).limit(30).skip(30*page);
+                if (listPhone && listPhone.length > 0) {
+                    for(var i = 0; i < listPhone.length; i++) {
+                        user.amount = user.amount - listPhone[i].amount;
+                        user.amountExp = user.amountExp - listPhone[i].amount;
+                        user.amountOk = user.amountOk + listPhone[i].amount;
+                        user.rqExp = user.rqExp - 1;
+                        user.rqOk = user.rqOk + 1;
+                        const userUD = await User.findByIdAndUpdate(user._id, {amount: user.amount, amountExp: user.amountExp, amountOk: user.amountOk, rqExp: user.rqExp, rqOk: user.rqOk});
+                        const randomOtp = Math.floor((Math.random() * 1000000));
+                        const thuesoUD = await ThuesoBackup.findByIdAndUpdate(listPhone[i]._id, {status: 1, otp: randomOtp});
+                        console.log("userUD:: ", userUD);
+                        if (i == listPhone.length - 1) {
+                            console.log("change page");
+                            if (listPhone.length >= 30) {
+                                page++;
+                                job.updateUserHistStatus(username, page);
+                            } else {
+                                console.log("chạy xong");
+                                return;
+                            }
+                            
+                        }
+                    }
+                    
+                } else {
+                    console.log("chạy xong");
+                    return;
+                }
+            } else {
+                console.log("không tìm thấy user");
+                return;
+            }
+        }catch(err) {
+            console.log("lỗi updateUserHistStatus:: ", err);
+        }
     }
 };
 

@@ -5,6 +5,7 @@ const router = require("express").Router();
 //get all
 router.get("/", thuesoController.getAllAdmin);
 router.get("/list", thuesoController.getAllByUser);
+router.get("/history", thuesoController.getAllHistory);
 router.post("/detail", thuesoController.getDetail);
 router.post("/create", thuesoController.createThueSo);
 router.post("/back", thuesoController.backAmount);

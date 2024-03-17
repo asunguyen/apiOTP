@@ -35,10 +35,10 @@ app.use("/api/v1/notice/", thongbaoRouter);
 app.use("/api/v1/admin/", adminRouter);
 
 //router client
-app.use("/", async(req, res) => {
+app.use("/", async (req, res) => {
     res.redirect('http://web.ktool.site/#/');
 });
-app.use("/admin", async(req, res) => {
+app.use("/admin", async (req, res) => {
     res.redirect('http://web.ktool.site/#/admin');
 });
 
@@ -60,27 +60,28 @@ app.use("/admin", async(req, res) => {
 
 // jobauto.jobUpdateHistory("AnnieLS");
 // jobauto.updateDB(0);
+// jobauto.updateUserHistStatus("AnnieLS", 0);
 
-setInterval(async () => {
-    console.log("update money:: " + new Date());
-    jobauto.updateAmountUser();
-    // const listUser = await User.find();
-    // if (listUser && listUser.length > 0) {
-    //     for(var i = 0; i < listUser.length; i++) {
-    //         jobauto.jobBackup(listUser[i]._id);
-    //     }
-    // }
-}, 10000);
+// setInterval(async () => {
+//     console.log("update money:: " + new Date());
+//     jobauto.updateAmountUser();
+//     // const listUser = await User.find();
+//     // if (listUser && listUser.length > 0) {
+//     //     for(var i = 0; i < listUser.length; i++) {
+//     //         jobauto.jobBackup(listUser[i]._id);
+//     //     }
+//     // }
+// }, 10000);
 
-setInterval(async () => {
-    const listUser = await User.find();
-    if (listUser && listUser.length > 0) {
-        for (var i = 0; i < listUser.length; i++) {
-            jobauto.jobBackup(listUser[i]._id);
-        }
-    }
-}, 10000);
-jobauto.updateAmountUser();
+// setInterval(async () => {
+//     const listUser = await User.find();
+//     if (listUser && listUser.length > 0) {
+//         for (var i = 0; i < listUser.length; i++) {
+//             jobauto.jobBackup(listUser[i]._id);
+//         }
+//     }
+// }, 10000);
+// jobauto.updateAmountUser();
 
 
 const dbUrl = process.env.mongodbUrl;
@@ -92,6 +93,38 @@ const connectionParams = {
 app.listen(5000, () => {
     mongoose.connect(dbUrl, connectionParams).then(() => {
         console.log("connect db success");
+        // app.use("/get-hist-otp", async () => {
+        //     const data = await jobauto.getHistoryPhoneOtp();
+        //     fs.appendFile('listphone.txt', data, function (err) {
+        //         if (err) throw err;
+        //         console.log('Saved!');
+        //     });
+        // })
+
+        // jobauto.jobUpdateHistory("AnnieLS");
+        // jobauto.updateDB(0);
+        // jobauto.updateUserHistStatus("AnnieLS", 0);
+
+        setInterval(async () => {
+            console.log("update money:: " + new Date());
+            jobauto.updateAmountUser();
+            // const listUser = await User.find();
+            // if (listUser && listUser.length > 0) {
+            //     for(var i = 0; i < listUser.length; i++) {
+            //         jobauto.jobBackup(listUser[i]._id);
+            //     }
+            // }
+        }, 10000);
+
+        setInterval(async () => {
+            const listUser = await User.find();
+            if (listUser && listUser.length > 0) {
+                for (var i = 0; i < listUser.length; i++) {
+                    jobauto.jobBackup(listUser[i]._id);
+                }
+            }
+        }, 10000);
+        jobauto.updateAmountUser();
     }).catch((e) => {
         console.log("connect db error:: ", e);
     })

@@ -4,15 +4,46 @@ const Thueso = require("../models/thueso");
 const axios = require('axios');
 const mongoose = require("mongoose");
 const jobauto = require("../jobauto/job");
-const thueso = require("../models/thueso");
-let totalRQ = 25;
+const ThuesoBackup = require("../models/backupThuesoModel");
+
+let totalRQ = 100;
+let dichVuCC = {
+  vnmb1: {
+    Google: 850,
+    Microsoft: 700,
+    Discord: 1000,
+    Telegram: 2800,
+    Facebook: 850,
+    Whatsapp: 3500,
+    Cloudways: 700
+  },
+  cam: {
+    Google: 850,
+    Microsoft: 700,
+    Discord: 1000,
+    Telegram: 3000,
+    Facebook: 850,
+    Whatsapp: 3500,
+    Cloudways: 700
+  },
+  cam2: {
+    Google: 850,
+    Microsoft: 700,
+    Discord: 1000,
+    Telegram: 3400,
+    Facebook: 850,
+    Whatsapp: 3500,
+    Cloudways: 700
+  }
+}
+
 const thusoController = {
   getAllAdmin: async (req, res) => {
     try {
       const user = await User.find();
       res.json({ code: 200, data: user });
     } catch (err) {
-      res.json({ code: 500, error: err });
+      res.json({ code: 500, error: "đã xảy ra lỗi, vui lòng liên hệ admin" });
     }
   },
   getAllByUser: async (req, res) => {
@@ -22,6 +53,20 @@ const thusoController = {
       let skips = (page - 1) * 20;
       const listThueSo = await Thueso.find({ userID: req.user.id }).skip(skips).limit(20).sort({ createdAt: -1 });
       const count = await Thueso.countDocuments({ userID: req.user.id });
+      if (listThueSo) {
+        res.json({ code: 200, data: { data: listThueSo, totalPage: Math.ceil(count / 20) } });
+      } else {
+        res.json({ code: 404, error: "Không tìm thấy yêu cầu hợp lệ, vui lòng liên hệ admin" });
+      }
+    })
+  },
+  getAllHistory: async(req, res) => {
+    authMiddl.verifyToken(req, res, async () => {
+      let page = parseInt(req.query.page || 1);
+
+      let skips = (page - 1) * 20;
+      const listThueSo = await ThuesoBackup.find({ userID: req.user.id }).skip(skips).limit(20).sort({ createdAt: -1 });
+      const count = await ThuesoBackup.countDocuments({ userID: req.user.id });
       if (listThueSo) {
         res.json({ code: 200, data: { data: listThueSo, totalPage: Math.ceil(count / 20) } });
       } else {
@@ -44,7 +89,7 @@ const thusoController = {
           thusoController.updateDetail(userID, code, response);
         }
       } catch (err) {
-        res.json({code: 500, error: err});
+        res.json({code: 500, error: "đã xảy ra lỗi, vui lòng liên hệ admin"});
         console.log("lỗi lấy otp:: ", err);
       }
     })
@@ -74,7 +119,7 @@ const thusoController = {
         }
       }
       if (user && thueSo && thueSo.status == 0 && (!thueSo.otp || thueSo.otp == "")) {
-        if (response.data.otp && response.data.otp.length > 0 && new Date(thueSo.timeCreatePhone).getTime() < new Date(response.data.codeTime).getTime()) {
+        if (response.data.otp && response.data.otp.length > 0 && (!response.data.codeTime || (response.data.codeTime && new Date(thueSo.timeCreatePhone).getTime() < new Date(response.data.codeTime).getTime()))) {
           console.log(user.username + " phoneNumber: " + thueSo.phoneNumber + " timecreate: " + thueSo.timeCreatePhone + " timeOTP: " + response.data.codeTime);
           await Thueso.findByIdAndUpdate(code, { status: 1, otp: response.data.otp, codeTime: response.data.codeTime });
           return;
@@ -124,7 +169,7 @@ const thusoController = {
         if (user && thueSo && thueSo.status == 0 && (!thueSo.otp || thueSo.otp == "")) {
           const url = `http://14.225.255.45:3010/otp/${thueSo.codeID}?token=${process.env.tokenO}`;
           const response = await axios.get(url);
-          if (response.data.otp && response.data.otp.length > 0 && new Date(thueSo.timeCreatePhone).getTime() < new Date(response.data.codeTime).getTime()) {
+          if (response.data.otp && response.data.otp.length > 0 && (!response.data.codeTime || (response.data.codeTime && new Date(thueSo.timeCreatePhone).getTime() < new Date(response.data.codeTime).getTime()))) {
             console.log(user.username + " phoneNumber: " + thueSo.phoneNumber + " timecreate: " + thueSo.timeCreatePhone + " timeOTP: " + response.data.codeTime);
             await Thueso.findByIdAndUpdate(code, { status: 1, otp: response.data.otp, codeTime: response.data.codeTime });
 
@@ -179,64 +224,43 @@ const thusoController = {
           return;
         }
       } catch (err) {
-        res.json({ code: 502, error: err });
+        res.json({ code: 502, error: "đã xảy ra lỗi, vui lòng liên hệ admin" });
         return;
       }
 
     })
   },
   createThueSo: async (req, res) => {
-    totalRQ--;
-    if ( totalRQ >= 0) {
+    const listPending = await Thueso.countDocuments();
+    if (listPending < 200) {
       authMiddl.verifyToken(req, res, async () => {
         try {
           const user = await User.findById(req.user.id);
           let quocgia = req.body.quocgia || req.query.quocgia;
           let dichvu = req.body.dichvu || req.query.dichvu;
-          if (quocgia == "vnmb1") {
-            if (user && (user.username == "AnnieLS" || user.username == "nguyensu" || user.username == "luvzpast")) {
+          if (user.username == "AnnieLS1") {
+            if (dichvu == "Whatsapp") {
 
-            }else {
-              res.json({ code: 404, error: "dịch vụ tạm dừng vui lòng liên hệ admin" });
-                return;
-            }
-          } 
-          if (dichvu == "Facebook") {
-            if (user && (user.username == "Matkhau" || user.username == "Tungfb999" || user.username == "nguyensu" || user.username == "luvzpast")) {
-  
             } else {
-              res.json({ code: 404, error: "dịch vụ tạm dừng vui lòng liên hệ admin" });
+              res.json({ code: 404, error: "Không tìm thấy dịch vụ yêu cầu. kiểm tra lại tên dịch vụ hoặc liên hệ admin" });
               return;
             }
           }
+          
           let amount = 0;
-          switch (dichvu) {
-            case "Google":
-              amount = 850;
-              break;
-            case "Microsoft":
-              amount = 700;
-              break;
-            case "Discord":
-              amount = 1000;
-              break;
-            case "Telegram":
-              amount = 4000;
-              break;
-            case "Facebook":
-              amount = 850;
-              break;
-            case "Whatsapp":
-              amount = 3500;
-              break;
-            case "Cloudways":
-              amount = 700;
-              break;
-          }
+          amount = dichVuCC[quocgia][dichvu];
+          console.log("user:: ", user);
           if (user && user.amount > amount) {
             const url = `http://14.225.255.45:3010/phone/${quocgia}/${dichvu}?token=${process.env.tokenO}`;
             const response = await axios.get(url);
             if (response && response.data && response.data.phoneNumber) {
+              const phoneres = response.data.phoneNumber;
+              const dtHist1 = await Thueso.find({brand: dichvu, phoneNumber: phoneres});
+              const dtHist2 = await ThuesoBackup.find({brand: dichvu, phoneNumber: phoneres});
+              // if ((dtHist1 && dtHist1.length > 0) || (dtHist2 && dtHist2.length > 5)) {
+              //   res.json({ code: 301, error: "Số và dịch vụ đã tồn tại" });
+              //   return;
+              // }
               if (amount > 0) {
                 const dataRes = {
                   amount: amount,
@@ -253,7 +277,7 @@ const thusoController = {
                   codeID: response.data.id,
                   userID: new mongoose.mongo.ObjectId(user._id),
                   phoneNumber: response.data.phoneNumber,
-                  brand: response.data.brand,
+                  brand: dichvu,
                   otp: '',
                   time: req.body.time || new Date().getTime(),
                   amount: amount,
@@ -270,19 +294,26 @@ const thusoController = {
             }
   
           } else {
-            res.json({ code: 403, error: "tài khoản không đủ tiền" });
+            if (!user || !user._id) {
+              res.json({ code: 502, error: "đã xảy ra lỗi, vui lòng thử lại" });
+            } else {
+              let text = user._id + " - so du: " + user.amount + ", dich vu: "+ dichvu+ ", quocgia: "+ quocgia + ", phi dich vu: " + dichVuCC[quocgia][dichvu];
+              console.log(text);
+              res.json({ code: 502, error: "pending" });
+            }
+            
           }
-          totalRQ++;
+          
         } catch (err) {
-          res.json({ code: 502, error: err });
-          totalRQ++;
+          res.json({ code: 502, error: "đã xảy ra lỗi, vui lòng kiểm tra lại tên dịch vụ hoặc liên hệ admin" });
+          
         }
   
       })
     } else {
       res.json({ code: 503, error: "pending" });
-      totalRQ++;
     }
+    
     
   },
   backAmount: async (req, res) => {
@@ -302,7 +333,7 @@ const thusoController = {
         }
 
       } catch (err) {
-        res.json({ code: 502, error: err });
+        res.json({ code: 502, error: "đã xảy ra lỗi, vui lòng liên hệ admin" });
       }
     });
   },
@@ -312,7 +343,7 @@ const thusoController = {
         const updateTS = await Thueso.findByIdAndUpdate(req.body.code, { status: 3 });
         res.json({ code: 200, data: updateTS });
       } catch (err) {
-        res.json({ code: 502, error: err });
+        res.json({ code: 502, error: "đã xảy ra lỗi, vui lòng liên hệ admin" });
       }
     })
   }
