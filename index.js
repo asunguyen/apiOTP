@@ -15,6 +15,7 @@ const thuesoRouter = require("./routers/thueso");
 const thongbaoRouter = require("./routers/thongbaoRouter");
 const User = require("./models/user");
 const jobauto = require("./jobauto/job");
+const Thueso = require("./models/thueso");
 var fs = require('fs');
 dotenv.config();
 var app = express();
@@ -117,10 +118,10 @@ app.listen(5000, () => {
         }, 10000);
 
         setInterval(async () => {
-            const listUser = await User.find();
+            const listUser = await Thueso.find({status: { $ne: 0 } });
             if (listUser && listUser.length > 0) {
                 for (var i = 0; i < listUser.length; i++) {
-                    jobauto.jobBackup(listUser[i]._id);
+                    jobauto.jobBackup(listUser[i].userID);
                 }
             }
         }, 10000);

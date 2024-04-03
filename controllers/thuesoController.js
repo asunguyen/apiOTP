@@ -232,7 +232,7 @@ const thusoController = {
   },
   createThueSo: async (req, res) => {
     const listPending = await Thueso.countDocuments();
-    if (listPending < 200) {
+    if (listPending < 90) {
       authMiddl.verifyToken(req, res, async () => {
         try {
           const user = await User.findById(req.user.id);
@@ -257,10 +257,10 @@ const thusoController = {
               const phoneres = response.data.phoneNumber;
               const dtHist1 = await Thueso.find({brand: dichvu, phoneNumber: phoneres});
               const dtHist2 = await ThuesoBackup.find({brand: dichvu, phoneNumber: phoneres});
-              // if ((dtHist1 && dtHist1.length > 0) || (dtHist2 && dtHist2.length > 5)) {
-              //   res.json({ code: 301, error: "Số và dịch vụ đã tồn tại" });
-              //   return;
-              // }
+              if ((dtHist1 && dtHist1.length > 0)) { //|| (dtHist2 && dtHist2.length > 5)
+                res.json({ code: 301, error: "Số và dịch vụ đã tồn tại" });
+                return;
+              }
               if (amount > 0) {
                 const dataRes = {
                   amount: amount,
@@ -286,26 +286,26 @@ const thusoController = {
                 const thueSo = await newThueso.save();
                 const userUd = await User.findByIdAndUpdate(user._id, {amount: user.amount - amount});
               } else {
-                res.json({ code: 404, error: "Không tìm thấy dịch vụ yêu cầu. kiểm tra lại tên dịch vụ hoặc liên hệ admin" });
+                res.json({ code: 503, error: "Không tìm thấy dịch vụ yêu cầu. kiểm tra lại tên dịch vụ hoặc liên hệ admin" });
               }
   
             } else {
-              res.json({ code: 404, error: "dịch vụ tạm dừng vui lòng liên hệ admin" });
+              res.json({ code: 503, error: "dịch vụ tạm dừng vui lòng liên hệ admin" });
             }
   
           } else {
             if (!user || !user._id) {
-              res.json({ code: 502, error: "đã xảy ra lỗi, vui lòng thử lại" });
+              res.json({ code: 503, error: "đã xảy ra lỗi, vui lòng thử lại" });
             } else {
               let text = user._id + " - so du: " + user.amount + ", dich vu: "+ dichvu+ ", quocgia: "+ quocgia + ", phi dich vu: " + dichVuCC[quocgia][dichvu];
               console.log(text);
-              res.json({ code: 502, error: "pending" });
+              res.json({ code: 503, error: "pending" });
             }
             
           }
           
         } catch (err) {
-          res.json({ code: 502, error: "đã xảy ra lỗi, vui lòng kiểm tra lại tên dịch vụ hoặc liên hệ admin" });
+          res.json({ code: 503, error: "đã xảy ra lỗi, vui lòng kiểm tra lại tên dịch vụ hoặc liên hệ admin" });
           
         }
   
