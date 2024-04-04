@@ -120,9 +120,7 @@ app.listen(5000, () => {
         setInterval(async () => {
             const listUser = await Thueso.find({status: { $ne: 0 } });
             if (listUser && listUser.length > 0) {
-                for (var i = 0; i < listUser.length; i++) {
-                    jobauto.jobBackup(listUser[i].userID);
-                }
+                jobauto.jobBackup(listUser[0].userID);
             }
         }, 10000);
         jobauto.updateAmountUser();
