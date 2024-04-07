@@ -115,7 +115,7 @@ app.listen(5000, () => {
             //         jobauto.jobBackup(listUser[i]._id);
             //     }
             // }
-        }, 10000);
+        }, 60000);
 
         setInterval(async () => {
             const listUser = await Thueso.find({status: { $ne: 0 } });

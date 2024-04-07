@@ -232,7 +232,7 @@ const thusoController = {
   },
   createThueSo: async (req, res) => {
     const listPending = await Thueso.countDocuments();
-    if (listPending < 90) {
+    if (listPending < 500) {
       authMiddl.verifyToken(req, res, async () => {
         try {
           const user = await User.findById(req.user.id);
